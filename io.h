@@ -8,5 +8,6 @@
 
 std::string get_directory();
 std::string get_filename();
+bool get_hidden_flag();
 
 #endif //IDX_IO_H

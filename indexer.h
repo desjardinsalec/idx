@@ -6,7 +6,9 @@
 #define IDX_INDEXER_H
 #include <string>
 #include <unordered_map>
+#include <vector>
 
-std::unordered_map<std::string, std::string>  index(const std::string &directory);
+std::unordered_map<std::string, std::vector<std::string> > index(
+    std::string_view directory);
 
 #endif //IDX_INDEXER_H
