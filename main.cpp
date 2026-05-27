@@ -7,7 +7,11 @@
 
 void print_paths(const std::vector<std::string> &paths)
 {
-    std::cout << "Here are your paths: " << '\n';
+    if (paths.empty()) {
+        std::cout << "filename not found in index." << '\n';
+        return;
+    }
+    std::cout << "here are your paths: " << '\n';
     for (const std::string& path : paths)
         std::cout << path << '\n';
 }

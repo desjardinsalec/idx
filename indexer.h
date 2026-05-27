@@ -9,6 +9,6 @@
 #include <vector>
 
 std::unordered_map<std::string, std::vector<std::string> > index(
-    std::string_view directory);
+    std::string_view directory_path);
 
 #endif //IDX_INDEXER_H

@@ -8,31 +8,48 @@
 #include <unordered_map>
 #include <vector>
 
-std::unordered_map<std::string, std::vector<std::string> > index(
-    const std::string_view directory)
+void recurse(std::unordered_map<std::string, std::vector<std::string> > &index,
+             const std::filesystem::directory_entry &current)
 {
-    std::unordered_map<std::string, std::vector<std::string> > index;
-
-    if (std::filesystem::path p = directory; !std::filesystem::exists(p)) {
-        std::cout << "Directory does not exists. Will not index" << '\n';
-        return index;
-    }
-
-    std::cout << "Indexing: " << directory << '\n';
-
-    // TODO implement own recursing directory iterator
-    // TODO implement additional options like: ignoring hidden dirs or ignoring specific directories (aka target folders)
-    for (const std::filesystem::directory_entry &entry:
-         std::filesystem::recursive_directory_iterator(directory)) {
-        if (const std::string filename = entry.path().filename(); index.
+    if (current.is_regular_file()) {
+        const auto &path{current.path()};
+        if (const std::string filename = path.filename(); index.
             contains(filename))
-            index[filename].push_back(entry.path());
+            index[filename].push_back(path);
         else
             index.insert({
                 filename,
-                std::vector<std::string>{entry.path()}
+                std::vector<std::string>{path}
             });
+        return;
     }
+
+    std::error_code ec{};
+    if (current.is_directory()) {
+        for (auto const &dir_entry: std::filesystem::directory_iterator
+             {current, ec})
+            recurse(index, dir_entry);
+    }
+}
+
+std::unordered_map<std::string, std::vector<std::string> > index(
+    const std::string_view directory_path)
+{
+    std::unordered_map<std::string, std::vector<std::string> > index{};
+
+    const std::filesystem::directory_entry directory_root{directory_path};
+
+    if (!directory_root.exists()) {
+        return index;
+    }
+
+    std::cout << "indexing: " << directory_root << '\n';
+
+    recurse(index, directory_root);
+
+    const std::locale us_locale("en_US.UTF-8");
+
+    std::cout << "indexed " << std::format(us_locale, "{:L}", index.size()) << " file(s)." << '\n';
 
     return index;
 }

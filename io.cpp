@@ -8,13 +8,13 @@ std::string get_input();
 
 std::string get_directory()
 {
-    std::cout << "Enter directory to index: ";
+    std::cout << "enter directory to index: ";
     return get_input();
 }
 
 std::string get_filename()
 {
-    std::cout << "Enter filename you want: ";
+    std::cout << "enter filename you wish to find: ";
     return get_input();
 }
 
